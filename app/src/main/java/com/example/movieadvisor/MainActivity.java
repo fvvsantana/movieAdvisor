@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void showMovies(JSONArray movies){
         mTvMovies.setText(movies.toString());
+        // TODO: treat errors when looping through the JSONArray, because a parsing error could happen
     }
 
     public void goToDetails(View view){
