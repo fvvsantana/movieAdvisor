@@ -1,37 +1,62 @@
 package com.example.movieadvisor;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     public static final String movieIdKey = "movieId";
     public final String TAG = getClass().getSimpleName();
 
-    private TextView mTvMovies;
+    ArrayList<String> mTestArray;
+    RecyclerView mRvMoviesList;
+    RecyclerView.LayoutManager mLayoutManager;
+    RecyclerView.Adapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTvMovies = (TextView) findViewById(R.id.tvMovies);
+        mRvMoviesList = (RecyclerView) findViewById(R.id.activity_main_rvMoviesList);
 
+        // Use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRvMoviesList.setHasFixedSize(true);
+
+        // Use a linear layout manager for the list
+        mLayoutManager = new LinearLayoutManager(this);
+        mRvMoviesList.setLayoutManager(mLayoutManager);
+
+        /*
+            Make an asynchronous request to get a JSONArray with the movies.
+            When it receives the response, call the method showMoviesList passing the JSONArray as argument.
+         */
+        // Request the list of movies and show movies when responded
+        requestMovies();
         // Request movies
+    }
+
+    /*
+        Make an asynchronous request to get a JSONArray with the movies.
+        When it receives the response, call the method showMoviesList passing the JSONArray as argument.
+     */
+    private void requestMovies(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -41,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.e(TAG, "Movies response: " + response.toString());
-                        showMovies(response);
+                        showMoviesList(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -53,13 +78,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
         requestQueue.add(jsonArrayRequest);
     }
 
-    public void showMovies(JSONArray movies){
-        mTvMovies.setText(movies.toString());
-        // TODO: treat errors when looping through the JSONArray, because a parsing error could happen
+    public void showMoviesList(JSONArray movies){
+        mAdapter = new MovieListAdapter(movies);
+        mRvMoviesList.setAdapter(mAdapter);
     }
 
     public void goToDetails(View view){
