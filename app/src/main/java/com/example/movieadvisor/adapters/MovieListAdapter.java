@@ -1,6 +1,5 @@
-package com.example.movieadvisor;
+package com.example.movieadvisor.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.movieadvisor.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
