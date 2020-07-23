@@ -33,23 +33,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRvMoviesList = (RecyclerView) findViewById(R.id.activity_main_rvMoviesList);
 
+        // RecyclerView for the list of movies
+        mRvMoviesList = (RecyclerView) findViewById(R.id.activity_main_rvMoviesList);
         // Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRvMoviesList.setHasFixedSize(true);
-
-        // Use a linear layout manager for the list
+        // Use a linear layout manager for the layout of the list of movies
         mLayoutManager = new LinearLayoutManager(this);
         mRvMoviesList.setLayoutManager(mLayoutManager);
 
-        /*
-            Make an asynchronous request to get a JSONArray with the movies.
-            When it receives the response, call the method showMoviesList passing the JSONArray as argument.
-         */
-        // Request the list of movies and show movies when responded
+        // Request the list of movies asynchronously and show movies when responded
         requestMovies();
-        // Request movies
     }
 
     /*

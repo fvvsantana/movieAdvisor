@@ -9,12 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
 
-    private ArrayList<String> mTestArray;
+    private JSONArray mMovies;
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -26,13 +28,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     public MovieListAdapter(JSONArray movies){
-        mTestArray = new ArrayList<>();
-        for(int i = 0; i < 100; i++){
-            mTestArray.add(Integer.toString(i));
-        }
+        mMovies = movies;
         // TODO: treat errors when looping through the JSONArray, because a parsing error could happen
     }
 
+    // Inflate layout from xml and create a ViewHolder to be bound to a position by the adapter
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,14 +40,25 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         return new ViewHolder(view);
     }
 
+    // Fill the ViewHolder from the JSONArray information
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.mTvMovieTitle.setText(mTestArray.get(position));
+        try{
+            JSONObject jsonObject = mMovies.getJSONObject(position);
+
+            String movieTitle = jsonObject.getString("title");
+            holder.mTvMovieTitle.setText(movieTitle);
+
+            String moviePosterURL = jsonObject.getString("poster_url");
+        }catch(JSONException e){
+            e.printStackTrace();
+            // TODO: treat this parsing error
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mTestArray.size();
+        return mMovies.length();
     }
 
 }
