@@ -17,7 +17,7 @@ import com.example.movieadvisor.util.IPAddresses;
 import org.json.JSONObject;
 
 public class MovieDetailsActivity extends AppCompatActivity {
-    public final String TAG = getClass().getSimpleName();
+    private static final String TAG = "MovieDetailsActivity";
     private TextView mTvMovieDetails;
 
     @Override

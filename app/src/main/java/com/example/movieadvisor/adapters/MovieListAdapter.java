@@ -18,22 +18,49 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
+    private static final String TAG = "MovieListAdapter";
 
-    private JSONArray mMovies;
+    private JSONArray mMoviesData;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    private ViewHolder.MovieOnClickListener mMovieListener;
 
-        TextView mTvMovieTitle;
-        ImageView mIvMoviePoster;
-        public ViewHolder(@NonNull View itemView) {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public interface MovieOnClickListener{
+            void movieOnClick(int moviePosition);
+        }
+
+        private MovieOnClickListener mMovieOnClickListener;
+
+        private TextView mTvMovieTitle;
+        private ImageView mIvMoviePoster;
+        public ViewHolder(@NonNull View itemView, MovieOnClickListener movieOnClickListener){
             super(itemView);
             mTvMovieTitle = (TextView) itemView.findViewById(R.id.movie_list_item_tvMovieTitle);
             mIvMoviePoster = (ImageView) itemView.findViewById(R.id.movie_list_item_ivMoviePoster);
+
+            // Get the main activity as listener to this viewholder
+            mMovieOnClickListener = movieOnClickListener;
+
+            // Set this view holder as listener of the view item
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            // Inform the main activity that this viewholder was clicked
+            mMovieOnClickListener.movieOnClick(getAdapterPosition());
+        }
+
     }
 
-    public MovieListAdapter(JSONArray movies){
-        mMovies = movies;
+    /*
+     Receive the data about the movies to be shown.
+     Receive an object that will listen to clicks on the movies.
+    */
+    public MovieListAdapter(JSONArray moviesData, ViewHolder.MovieOnClickListener movieListener){
+        mMoviesData = moviesData;
+        mMovieListener = movieListener;
         // TODO: treat errors when looping through the JSONArray, because a parsing error could happen
     }
 
@@ -42,14 +69,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_list_item, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mMovieListener);
     }
 
     // Fill the ViewHolder from the JSONArray information
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try{
-            JSONObject jsonObject = mMovies.getJSONObject(position);
+            JSONObject jsonObject = mMoviesData.getJSONObject(position);
 
             String movieTitle = jsonObject.getString("title");
             holder.mTvMovieTitle.setText(movieTitle);
@@ -67,7 +94,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     @Override
     public int getItemCount() {
-        return mMovies.length();
+        return mMoviesData.length();
     }
 
     private void loadImage(String imageURL, ImageView imageView){

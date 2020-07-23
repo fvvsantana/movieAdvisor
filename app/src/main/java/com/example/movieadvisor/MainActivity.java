@@ -19,17 +19,17 @@ import com.example.movieadvisor.adapters.MovieListAdapter;
 import com.example.movieadvisor.util.IPAddresses;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
-import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieListAdapter.ViewHolder.MovieOnClickListener{
+    private static final String TAG = "MainActivity";
     public static final String movieIdKey = "movieId";
-    public final String TAG = getClass().getSimpleName();
 
-    ArrayList<String> mTestArray;
-    RecyclerView mRvMoviesList;
-    RecyclerView.LayoutManager mLayoutManager;
-    RecyclerView.Adapter mAdapter;
+    private RecyclerView mRvMoviesList;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mAdapter;
+    private JSONArray mMoviesData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.e(TAG, "Movies response: " + response.toString());
-                        showMoviesList(response);
+                        mMoviesData = response;
+                        showMoviesList();
                     }
                 },
                 new Response.ErrorListener() {
@@ -78,15 +79,32 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    public void showMoviesList(JSONArray movies){
-        mAdapter = new MovieListAdapter(movies);
+    public void showMoviesList(){
+        mAdapter = new MovieListAdapter(mMoviesData, this);
         mRvMoviesList.setAdapter(mAdapter);
     }
 
-    public void goToDetails(View view){
-        Intent intent = new Intent(this, MovieDetailsActivity.class);
-        int movieId = 240;
-        intent.putExtra(movieIdKey, movieId);
-        startActivity(intent);
+    // This method is called whenever a movie is clicked, receiving the movie position in the RecyclerView
+    @Override
+    public void movieOnClick(int moviePosition) {
+        goToMovieDetails(moviePosition);
     }
+
+    /*
+        Pick the id of the movie at moviePosition and send to the next intent to show details of the
+        selected movie.
+    */
+    public void goToMovieDetails(int moviePosition){
+        try{
+            int movieId = mMoviesData.getJSONObject(moviePosition).getInt("id");
+
+            Intent intent = new Intent(this, MovieDetailsActivity.class);
+            intent.putExtra(movieIdKey, movieId);
+            startActivity(intent);
+        }catch(JSONException e){
+            // TODO: treat error
+            e.printStackTrace();
+        }
+    }
+
 }
