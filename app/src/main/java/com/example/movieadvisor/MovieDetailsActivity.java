@@ -33,9 +33,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
             return;
         }
         movieId = data.getInt(MainActivity.movieIdKey);
-        String movieURL = IPAddresses.MOVIES_API_URL + '/' + movieId;
 
         // Request movie details for the specific movie
+        String movieURL = IPAddresses.MOVIES_API_URL + '/' + movieId;
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
