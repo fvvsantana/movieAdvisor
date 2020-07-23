@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/movie_list_item_ivMoviePoster"
-            android:layout_width="30dp"
-            android:layout_height="50dp"/>
+            android:layout_width="40dp"
+            android:layout_height="80dp"/>
 
         <TextView
             android:id="@+id/movie_list_item_tvMovieTitle"
