@@ -1,18 +1,21 @@
 package com.example.movieadvisor;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
 
@@ -21,9 +24,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView mTvMovieTitle;
+        ImageView mIvMoviePoster;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mTvMovieTitle = (TextView) itemView.findViewById(R.id.movie_list_item_tvMovieTitle);
+            mIvMoviePoster = (ImageView) itemView.findViewById(R.id.movie_list_item_ivMoviePoster);
         }
     }
 
@@ -49,7 +54,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
             String movieTitle = jsonObject.getString("title");
             holder.mTvMovieTitle.setText(movieTitle);
 
+
             String moviePosterURL = jsonObject.getString("poster_url");
+            // TODO: treat errors on image loading
+            //Picasso.get().load(moviePosterURL).into(holder.mIvMoviePoster);
+            loadImage(moviePosterURL, holder.mIvMoviePoster);
         }catch(JSONException e){
             e.printStackTrace();
             // TODO: treat this parsing error
@@ -59,6 +68,23 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     @Override
     public int getItemCount() {
         return mMovies.length();
+    }
+
+    private void loadImage(String imageURL, ImageView imageView){
+        // TODO: read the documentation of this method to see if I need to do something more (Ctrl+Q)
+        Picasso.get().load(imageURL).error(R.mipmap.ic_launcher).into(imageView, new Callback() {
+
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
     }
 
 }
