@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     public static final String movieIdIntentKey = "movieId";
     private static final String movieIdJsonKey = "id";
 
+    private ProgressBar mProgressBar;
+
     private RecyclerView mRvMoviesList;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mProgressBar = findViewById(R.id.activity_main_progressBar);
 
         // RecyclerView for the list of movies
         mRvMoviesList = findViewById(R.id.activity_main_rvMoviesList);
@@ -84,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     public void showMoviesList(){
         mAdapter = new MovieListAdapter(mMoviesData, this);
         mRvMoviesList.setAdapter(mAdapter);
+        // TODO: stop loading when you get an error also, then show some error information
+        // Remove progress bar because at this point we already have the JSONArray of movies
+        mProgressBar.setVisibility(View.GONE);
     }
 
     // This method is called whenever a movie is clicked, receiving the movie position in the RecyclerView
