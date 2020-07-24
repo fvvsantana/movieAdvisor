@@ -14,6 +14,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.util.IPAddresses;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,6 +104,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             mTvMovieSynopsis.setText(movieSynopsis);
             // Poster
             String moviePosterUrl = mMovieData.getString(moviePosterUrlJsonKey);
+            loadImage(moviePosterUrl, mImMoviePoster);
 
         }catch(JSONException e){
             e.printStackTrace();
@@ -121,5 +124,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
             aux.append(movieGenres.getString(nGenres - 1));
         }
         return aux.toString();
+    }
+
+    private void loadImage(String imageURL, ImageView imageView){
+        // TODO: read the documentation of this method to see if I need to do something more (Ctrl+Q)
+        Picasso.get().load(imageURL).error(R.mipmap.ic_launcher).into(imageView, new Callback() {
+
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 }
