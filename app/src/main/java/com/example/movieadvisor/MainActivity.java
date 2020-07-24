@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                         error.printStackTrace();
                         Log.e(TAG, "Error on fetching movies: " + error.toString());
 
-                        // Remove progress bar because at this point we already have the JSONArray of movies
+                        // Remove progress bar
                         removeProgressBar();
 
                         // TODO: stop loading when you get an error also, then show some error information
