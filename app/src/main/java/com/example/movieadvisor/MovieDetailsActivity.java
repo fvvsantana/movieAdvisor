@@ -15,6 +15,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.util.IPAddresses;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -24,6 +25,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView mTvMovieGenres;
     private TextView mTvMovieSynopsis;
 
+
+    private JSONObject mMovieData;
+    private static final String movieTitleJsonKey = "title";
+    private static final String moviePosterUrlJsonKey = "poster_url";
+    private static final String movieGenresJsonKey = "genres";
+    private static final String movieSynopsisJsonKey = "overview";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +48,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if(data == null){
             return;
         }
-        movieId = data.getInt(MainActivity.movieIdKey);
+        movieId = data.getInt(MainActivity.movieIdIntentKey);
 
-        // Request movie details for the specific movie
+        requestMovieDetails(movieId);
+    }
+
+    /*
+        Make an asynchronous request to get a JSONObject with the movie details.
+        When it receives the response, it calls the method showMovieDetails.
+     */
+    private void requestMovieDetails(int movieId){
         String movieURL = IPAddresses.MOVIES_API_URL + '/' + movieId;
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -54,7 +68,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.e(TAG, "Movie details response: " + response.toString());
-                        showMovie(response);
+                        showMovieDetails();
                     }
                 },
                 new Response.ErrorListener() {
@@ -67,9 +81,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 }
         );
         requestQueue.add(jsonObjectRequest);
+
     }
 
-    public void showMovie(JSONObject movie){
-        mTvMovieSynopsis.setText(movie.toString());
+
+    // Show movie title, poster, genres and synopsis to the screen
+    public void showMovieDetails(){
+        /*
+
+
+        try{
+
+        }catch(JSONException e){
+            e.printStackTrace();
+            // TODO: treat errors
+        }
+
+         */
     }
 }

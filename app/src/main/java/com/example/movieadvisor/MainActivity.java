@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,7 +23,8 @@ import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.ViewHolder.MovieOnClickListener{
     private static final String TAG = "MainActivity";
-    public static final String movieIdKey = "movieId";
+    public static final String movieIdIntentKey = "movieId";
+    private static final String movieIdJsonKey = "id";
 
     private RecyclerView mRvMoviesList;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         requestQueue.add(jsonArrayRequest);
     }
 
+    // Show movies to the screen
     public void showMoviesList(){
         mAdapter = new MovieListAdapter(mMoviesData, this);
         mRvMoviesList.setAdapter(mAdapter);
@@ -96,10 +97,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     */
     public void goToMovieDetails(int moviePosition){
         try{
-            int movieId = mMoviesData.getJSONObject(moviePosition).getInt("id");
+            int movieId = mMoviesData.getJSONObject(moviePosition).getInt(movieIdJsonKey);
 
             Intent intent = new Intent(this, MovieDetailsActivity.class);
-            intent.putExtra(movieIdKey, movieId);
+            intent.putExtra(movieIdIntentKey, movieId);
             startActivity(intent);
         }catch(JSONException e){
             // TODO: treat error
