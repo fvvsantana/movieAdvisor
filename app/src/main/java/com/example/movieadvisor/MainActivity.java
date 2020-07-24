@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     /*
         Make an asynchronous request to get a JSONArray with the movies.
-        When it receives the response, call the method showMoviesList passing the JSONArray as argument.
+        When it receives the response, it calls the method showMoviesList.
      */
     private void requestMovies(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
