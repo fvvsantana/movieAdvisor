@@ -57,7 +57,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     /*
         Make an asynchronous request to get a JSONArray with the movies.
-        When it receives the response, it calls the method showMoviesList.
+        When it receives the response:
+            Remove the ProgressBar from the screen
+            Call the method showMoviesList.
+        If it receives an error:
+            Remove the ProgressBar from the screen
+            Treat error
      */
     private void requestMovies(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -68,17 +73,28 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d(TAG, "Movies response: " + response.toString());
                         mMoviesData = response;
+
+                        // Remove progress bar because at this point we already have the JSONArray of movies
+                        removeProgressBar();
+
+                        Log.d(TAG, "Movies response: " + response.toString());
+
                         showMoviesList();
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        // TODO: treat errors
                         Log.e(TAG, "Error on fetching movies: " + error.toString());
+
+                        // Remove progress bar because at this point we already have the JSONArray of movies
+                        removeProgressBar();
+
+                        // TODO: stop loading when you get an error also, then show some error information
+                        // TODO: treat errors
 
                     }
                 }
@@ -86,13 +102,16 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         requestQueue.add(jsonArrayRequest);
     }
 
+    // Remove progress bar from the screen
+    private void removeProgressBar(){
+        mProgressBar.setVisibility(View.GONE);
+
+    }
+
     // Show movies to the screen
-    public void showMoviesList(){
+    private void showMoviesList(){
         mAdapter = new MovieListAdapter(mMoviesData, this);
         mRvMoviesList.setAdapter(mAdapter);
-        // TODO: stop loading when you get an error also, then show some error information
-        // Remove progress bar because at this point we already have the JSONArray of movies
-        mProgressBar.setVisibility(View.GONE);
     }
 
     // This method is called whenever a movie is clicked, receiving the movie position in the RecyclerView
@@ -105,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         Pick the id of the movie at moviePosition and send to the next intent to show details of the
         selected movie.
     */
-    public void goToMovieDetails(int moviePosition){
+    private void goToMovieDetails(int moviePosition){
         try{
             int movieId = mMoviesData.getJSONObject(moviePosition).getInt(movieIdJsonKey);
 
