@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,6 +19,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.adapters.MovieListAdapter;
 import com.example.movieadvisor.util.IPAddresses;
+import com.example.movieadvisor.util.VolleyErrorHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     private static final String movieIdJsonKey = "id";
 
     private ProgressBar mProgressBar;
+    private TextView mTvError;
 
     private RecyclerView mRvMoviesList;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         setContentView(R.layout.activity_main);
 
         mProgressBar = findViewById(R.id.activity_main_progressBar);
+        mTvError = findViewById(R.id.activity_main_tvError);
 
         // RecyclerView for the list of movies
         mRvMoviesList = findViewById(R.id.activity_main_rvMoviesList);
@@ -93,9 +97,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                         // Remove progress bar
                         removeProgressBar();
 
-                        // TODO: stop loading when you get an error also, then show some error information
-                        // TODO: treat errors
+                        // Show error information
+                        mTvError.setText(VolleyErrorHelper.getMessage(error, MainActivity.this));
+                        mTvError.setVisibility(View.VISIBLE);
 
+                        //mTvError.setText(VolleyErrorHelper.getMessage(error, MainActivity.this)
+                        //+ "\n Please restart application");
+                        // TODO: detect gesture of swiping down and try to request things again.
                     }
                 }
         );
