@@ -15,6 +15,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.util.IPAddresses;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,6 +69,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.e(TAG, "Movie details response: " + response.toString());
+                        mMovieData = response;
                         showMovieDetails();
                     }
                 },
@@ -88,16 +90,36 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     // Show movie title, poster, genres and synopsis to the screen
     public void showMovieDetails(){
-        /*
-
-
         try{
+            // Title
+            String movieTitle = mMovieData.getString(movieTitleJsonKey);
+            mTvMovieTitle.setText(movieTitle);
+            // Genres
+            JSONArray movieGenres = mMovieData.getJSONArray(movieGenresJsonKey);
+            mTvMovieGenres.setText(getGenresText(movieGenres));
+            // Synopsis
+            String movieSynopsis = mMovieData.getString(movieSynopsisJsonKey);
+            mTvMovieSynopsis.setText(movieSynopsis);
+            // Poster
+            String moviePosterUrl = mMovieData.getString(moviePosterUrlJsonKey);
 
         }catch(JSONException e){
             e.printStackTrace();
             // TODO: treat errors
         }
+    }
 
-         */
+    // Convert the JSONArray of genres to a string
+    private String getGenresText(JSONArray movieGenres) throws JSONException {
+        int nGenres = movieGenres.length();
+        StringBuilder aux = new StringBuilder();
+        for(int i = 0; i < nGenres - 1; i++){
+            aux.append(movieGenres.getString(i));
+            aux.append(", ");
+        }
+        if(nGenres > 0){
+            aux.append(movieGenres.getString(nGenres - 1));
+        }
+        return aux.toString();
     }
 }
