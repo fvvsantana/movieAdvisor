@@ -137,6 +137,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
+                // TODO: treat errors
                 e.printStackTrace();
             }
         });
