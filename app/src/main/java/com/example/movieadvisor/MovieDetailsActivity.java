@@ -21,6 +21,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = "MovieDetailsActivity";
     private TextView mTvMovieTitle;
     private ImageView mImMoviePoster;
+    private TextView mTvMovieGenres;
     private TextView mTvMovieSynopsis;
 
 
@@ -31,6 +32,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         mTvMovieTitle = findViewById(R.id.activity_movie_details_tvMovieTitle);
         mImMoviePoster = findViewById(R.id.activity_movie_details_imMoviePoster);
+        mTvMovieGenres = findViewById(R.id.activity_movie_details_tvMovieGenres);
         mTvMovieSynopsis = findViewById(R.id.activity_movie_details_tvMovieSynopsis);
 
         // Get movie id to be displayed
