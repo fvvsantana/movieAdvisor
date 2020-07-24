@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e(TAG, "Movies response: " + response.toString());
+                        Log.d(TAG, "Movies response: " + response.toString());
                         mMoviesData = response;
                         showMoviesList();
                     }
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
                         // TODO: treat errors
                         Log.e(TAG, "Error on fetching movies: " + error.toString());
 

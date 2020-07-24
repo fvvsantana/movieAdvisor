@@ -74,6 +74,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
                         // TODO: treat errors
                         Log.e(TAG, "Error on fetching movie details: " + error.toString());
 

@@ -108,7 +108,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
             @Override
             public void onError(Exception e) {
-
+                e.printStackTrace();
             }
         });
 
