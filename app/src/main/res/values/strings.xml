@@ -1,7 +1,14 @@
 <resources>
     <string name="app_name">MovieAdvisor</string>
-    <string name="activity_movie_details_moviePosterContentDescription">Movie poster</string>
+
+    <string name="error_genericServerError">Server Error</string>
+    <string name="error_timeoutError">Timeout Error</string>
+    <string name="error_noInternetConnection">No internet connection</string>
+
     <string name="movie_list_item_moviePosterContentDescription">Movie poster</string>
+
+    <string name="activity_movie_details_moviePosterContentDescription">Movie poster</string>
     <string name="activity_movie_details_movieSynopsisTitle">Synopsis</string>
     <string name="activity_movie_details_movieGenresTitle">Genres</string>
+
 </resources>
