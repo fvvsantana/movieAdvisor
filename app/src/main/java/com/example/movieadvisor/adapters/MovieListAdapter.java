@@ -99,7 +99,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     private void loadImage(String imageURL, ImageView imageView){
         // TODO: read the documentation of this method to see if I need to do something more (Ctrl+Q)
-        Picasso.get().load(imageURL).error(R.mipmap.ic_launcher).into(imageView, new Callback() {
+        Picasso.get().load(imageURL).error(R.mipmap.no_image_100).into(imageView, new Callback() {
 
             @Override
             public void onSuccess() {
