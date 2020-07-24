@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">MovieAdvisor</string>
-    <string name="activity_main_moviePosterContentDescription">Movie poster</string>
+    <string name="activity_movie_details_moviePosterContentDescription">Movie poster</string>
+    <string name="movie_list_item_moviePosterContentDescription">Movie poster</string>
     <string name="activity_movie_details_movieSynopsisTitle">Synopsis</string>
+    <string name="activity_movie_details_movieGenresTitle">Genres</string>
 </resources>
