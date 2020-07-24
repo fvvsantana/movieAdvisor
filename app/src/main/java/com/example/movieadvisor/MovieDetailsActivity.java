@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -23,6 +25,7 @@ import org.json.JSONObject;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = "MovieDetailsActivity";
+    private ProgressBar mProgressBar;
     private TextView mTvMovieTitle;
     private ImageView mImMoviePoster;
     private TextView mTvMovieGenres;
@@ -40,6 +43,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        mProgressBar = findViewById(R.id.activity_movie_details_progressBar);
         mTvMovieTitle = findViewById(R.id.activity_movie_details_tvMovieTitle);
         mImMoviePoster = findViewById(R.id.activity_movie_details_imMoviePoster);
         mTvMovieGenres = findViewById(R.id.activity_movie_details_tvMovieGenres);
@@ -49,16 +53,23 @@ public class MovieDetailsActivity extends AppCompatActivity {
         Bundle data = getIntent().getExtras();
         int movieId;
         if(data == null){
+            // TODO: add error treatment here
             return;
         }
         movieId = data.getInt(MainActivity.movieIdIntentKey);
 
+        // Fetch movie data and call showMovieDetails to show the data.
         requestMovieDetails(movieId);
     }
 
     /*
         Make an asynchronous request to get a JSONObject with the movie details.
-        When it receives the response, it calls the method showMovieDetails.
+        When it receives the response:
+            Remove the ProgressBar from the screen
+            Call the method showMovieDetails
+        If it receives an error:
+            Remove the ProgressBar from the screen
+            Treat error
      */
     private void requestMovieDetails(int movieId){
         String movieURL = IPAddresses.MOVIES_API_URL + '/' + movieId;
@@ -70,8 +81,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>(){
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.e(TAG, "Movie details response: " + response.toString());
                         mMovieData = response;
+
+                        /* Remove progress bar because at this point we already have the JSONObject
+                            with the details of the movie */
+                        removeProgressBar();
+
+                        Log.d(TAG, "Movie details response: " + response.toString());
                         showMovieDetails();
                     }
                 },
@@ -79,9 +95,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        // TODO: treat errors
                         Log.e(TAG, "Error on fetching movie details: " + error.toString());
 
+                        // Remove progress bar
+                        removeProgressBar();
+
+                        // TODO: treat errors
                     }
                 }
         );
@@ -89,9 +108,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     }
 
+    // Remove progress bar from the screen
+    private void removeProgressBar(){
+        mProgressBar.setVisibility(View.GONE);
+
+    }
+
 
     // Show movie title, poster, genres and synopsis to the screen
-    public void showMovieDetails(){
+    private void showMovieDetails(){
         try{
             // Title
             String movieTitle = mMovieData.getString(movieTitleJsonKey);
