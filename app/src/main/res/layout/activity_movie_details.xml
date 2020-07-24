@@ -26,7 +26,7 @@
             android:layout_gravity="center_horizontal"
             android:contentDescription="@string/movie_poster_content_description" />
         <TextView
-            android:id="@+id/activity_movie_details_tvSynopsis"
+            android:id="@+id/activity_movie_details_tvMovieSynopsis"
             android:layout_marginTop="400dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

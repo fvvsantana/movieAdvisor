@@ -36,8 +36,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         private ImageView mIvMoviePoster;
         public ViewHolder(@NonNull View itemView, MovieOnClickListener movieOnClickListener){
             super(itemView);
-            mTvMovieTitle = (TextView) itemView.findViewById(R.id.movie_list_item_tvMovieTitle);
-            mIvMoviePoster = (ImageView) itemView.findViewById(R.id.movie_list_item_ivMoviePoster);
+            mTvMovieTitle = itemView.findViewById(R.id.movie_list_item_tvMovieTitle);
+            mIvMoviePoster = itemView.findViewById(R.id.movie_list_item_ivMoviePoster);
 
             // Get the main activity as listener to this viewholder
             mMovieOnClickListener = movieOnClickListener;

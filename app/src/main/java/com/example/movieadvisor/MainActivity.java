@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         setContentView(R.layout.activity_main);
 
         // RecyclerView for the list of movies
-        mRvMoviesList = (RecyclerView) findViewById(R.id.activity_main_rvMoviesList);
+        mRvMoviesList = findViewById(R.id.activity_main_rvMoviesList);
         // Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRvMoviesList.setHasFixedSize(true);

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -18,13 +19,19 @@ import org.json.JSONObject;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = "MovieDetailsActivity";
-    private TextView mTvMovieDetails;
+    private TextView mTvMovieTitle;
+    private ImageView mImMoviePoster;
+    private TextView mTvMovieSynopsis;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        mTvMovieDetails = (TextView) findViewById(R.id.tvMovieDetails);
+
+        mTvMovieTitle = findViewById(R.id.activity_movie_details_tvMovieTitle);
+        mImMoviePoster = findViewById(R.id.activity_movie_details_imMoviePoster);
+        mTvMovieSynopsis = findViewById(R.id.activity_movie_details_tvMovieSynopsis);
 
         // Get movie id to be displayed
         Bundle data = getIntent().getExtras();
@@ -61,6 +68,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void showMovie(JSONObject movie){
-        mTvMovieDetails.setText(movie.toString());
+        mTvMovieSynopsis.setText(movie.toString());
     }
 }
