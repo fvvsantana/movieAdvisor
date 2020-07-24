@@ -26,6 +26,8 @@
             android:id="@+id/movie_list_item_tvMovieTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:textSize="20sp"
             android:layout_toRightOf="@id/movie_list_item_ivMoviePoster"
             android:layout_toEndOf="@id/movie_list_item_ivMoviePoster"
             android:layout_centerVertical="true"
