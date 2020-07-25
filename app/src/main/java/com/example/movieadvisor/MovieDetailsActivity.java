@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.util.IPAddresses;
+import com.example.movieadvisor.util.RequestState;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -40,6 +41,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private RequestQueue mRequestQueue;
 
+    // Variable to track the states of the request for the movie details
+    private RequestState mMovieDetailsRequestState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mImMoviePoster = findViewById(R.id.activity_movie_details_imMoviePoster);
         mTvMovieGenres = findViewById(R.id.activity_movie_details_tvMovieGenres);
         mTvMovieSynopsis = findViewById(R.id.activity_movie_details_tvMovieSynopsis);
+
+        // Update request state
+        mMovieDetailsRequestState = RequestState.NOT_REQUESTED;
 
         // Get movie id to be displayed
         Bundle data = getIntent().getExtras();
@@ -84,6 +91,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>(){
                     @Override
                     public void onResponse(JSONObject response) {
+                        // Update request state
+                        mMovieDetailsRequestState = RequestState.SUCCESSFUL;
+
                         mMovieData = response;
 
                         /* Remove progress bar because at this point we already have the JSONObject
@@ -103,12 +113,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         // Remove progress bar
                         removeProgressBar();
 
+                        // Update request state
+                        mMovieDetailsRequestState = RequestState.ERROR;
                         // TODO: treat errors
                     }
                 }
         );
         mRequestQueue.add(jsonObjectRequest);
 
+        // Update request state
+        mMovieDetailsRequestState = RequestState.REQUESTED;
     }
 
     // Remove progress bar from the screen
