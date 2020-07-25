@@ -4,6 +4,9 @@
     <string name="error_genericServerError">Server Error</string>
     <string name="error_timeoutError">Timeout Error</string>
     <string name="error_noInternetConnection">No internet connection</string>
+    <string name="error_touchToReload">Touch the screen to retry</string>
+
+
 
     <string name="movie_list_item_moviePosterContentDescription">Movie poster</string>
 

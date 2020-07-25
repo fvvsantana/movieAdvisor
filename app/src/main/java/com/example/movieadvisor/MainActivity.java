@@ -19,6 +19,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.adapters.MovieListAdapter;
 import com.example.movieadvisor.util.IPAddresses;
+import com.example.movieadvisor.util.RequestState;
 import com.example.movieadvisor.util.VolleyErrorHelper;
 
 import org.json.JSONArray;
@@ -30,21 +31,43 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     public static final String movieIdIntentKey = "movieId";
     private static final String movieIdJsonKey = "id";
 
-    private ProgressBar mProgressBar;
-    private TextView mTvError;
-
     private RecyclerView mRvMoviesList;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private JSONArray mMoviesData;
+
+    private RequestQueue mRequestQueue;
+
+    private View mScreenLayout;
+    private ProgressBar mProgressBar;
+    private TextView mTvError;
+    private TextView mTvTouchToReload;
+    // Variable to track the states of the request for the movies list
+    private RequestState mMoviesRequestState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mScreenLayout = findViewById(R.id.activity_main_screenLayout);
         mProgressBar = findViewById(R.id.activity_main_progressBar);
         mTvError = findViewById(R.id.activity_main_tvError);
+        mTvTouchToReload = findViewById(R.id.activity_main_tvTouchToReload);
+
+        mMoviesRequestState = RequestState.NOT_REQUESTED;
+
+
+        // Allow reloading page if got error on request
+        mScreenLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mMoviesRequestState == RequestState.ERROR){
+                    hideErrorInformation();
+                    requestMovies();
+                }
+            }
+        });
 
         // RecyclerView for the list of movies
         mRvMoviesList = findViewById(R.id.activity_main_rvMoviesList);
@@ -54,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         // Use a linear layout manager for the layout of the list of movies
         mLayoutManager = new LinearLayoutManager(this);
         mRvMoviesList.setLayoutManager(mLayoutManager);
+
+        mRequestQueue = Volley.newRequestQueue(this);
 
         // Request the list of movies asynchronously and show movies when responded
         requestMovies();
@@ -69,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             Treat error
      */
     private void requestMovies(){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        showProgressBar();
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 IPAddresses.MOVIES_API_URL,
@@ -77,6 +102,14 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+                        // Update request information
+                        mMoviesRequestState = RequestState.SUCCESSFUL;
+
+                        /* No more need to detect clicks for reloading the screen, because the
+                         request for data was successful */
+                        mScreenLayout.setOnClickListener(null);
+
+                        // Store the list of movies
                         mMoviesData = response;
 
                         // Remove progress bar because at this point we already have the JSONArray of movies
@@ -85,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                         Log.d(TAG, "Movies response: " + response.toString());
 
                         showMoviesList();
-
                     }
                 },
                 new Response.ErrorListener() {
@@ -97,23 +129,46 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                         // Remove progress bar
                         removeProgressBar();
 
-                        // Show error information
-                        mTvError.setText(VolleyErrorHelper.getMessage(error, MainActivity.this));
-                        mTvError.setVisibility(View.VISIBLE);
+                        // Show information about the error and how to reload the screen
+                        showErrorInformation(error);
 
-                        //mTvError.setText(VolleyErrorHelper.getMessage(error, MainActivity.this)
-                        //+ "\n Please restart application");
-                        // TODO: detect gesture of swiping down and try to request things again.
+                        // Update request information
+                        mMoviesRequestState = RequestState.ERROR;
                     }
                 }
         );
-        requestQueue.add(jsonArrayRequest);
+        mRequestQueue.add(jsonArrayRequest);
+        // Update request information
+        mMoviesRequestState = RequestState.REQUESTED;
+    }
+
+    // Show progress bar from the screen
+    private void showProgressBar(){
+        mProgressBar.setVisibility(View.VISIBLE);
+
     }
 
     // Remove progress bar from the screen
     private void removeProgressBar(){
         mProgressBar.setVisibility(View.GONE);
 
+    }
+
+    // Show information about the error and how to reload the screen
+    private void showErrorInformation(VolleyError error){
+        // Show error information
+        mTvError.setText(VolleyErrorHelper.getMessage(error, MainActivity.this));
+        mTvError.setVisibility(View.VISIBLE);
+        // Inform the user that he can reload the screen by touching it
+        mTvTouchToReload.setVisibility(View.VISIBLE);
+    }
+
+    // Hide information about the error
+    private void hideErrorInformation(){
+        // Hide error TextView
+        mTvError.setVisibility(View.GONE);
+        // Hide advice
+        mTvTouchToReload.setVisibility(View.GONE);
     }
 
     // Show movies to the screen
