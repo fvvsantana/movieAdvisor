@@ -151,7 +151,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                         // Update request state
                         mMovieDetailsRequestState = RequestState.ERROR;
-                        // TODO: treat errors
                     }
                 }
         );
