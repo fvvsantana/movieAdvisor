@@ -7,6 +7,7 @@
     android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/activity_movie_details_screenLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
@@ -33,46 +34,53 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <TextView
-            android:id="@+id/activity_movie_details_tvMovieTitle"
-            android:layout_margin="4dp"
+        <LinearLayout
+            android:id="@+id/activity_movie_details_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30sp"/>
+            android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/activity_movie_details_imMoviePoster"
-            android:layout_margin="8dp"
-            android:layout_width="180dp"
-            android:layout_height="270dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/activity_movie_details_moviePosterContentDescription"/>
+            <TextView
+                android:id="@+id/activity_movie_details_tvMovieTitle"
+                android:layout_margin="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"/>
 
-        <TextView
-            android:layout_margin="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@string/activity_movie_details_movieSynopsisTitle"/>
+            <ImageView
+                android:id="@+id/activity_movie_details_imMoviePoster"
+                android:layout_margin="8dp"
+                android:layout_width="180dp"
+                android:layout_height="270dp"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/activity_movie_details_moviePosterContentDescription"/>
 
-        <TextView
-            android:id="@+id/activity_movie_details_tvMovieSynopsis"
-            android:layout_margin="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_margin="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="@string/activity_movie_details_movieSynopsisTitle"/>
 
-        <TextView
-            android:layout_margin="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@string/activity_movie_details_movieGenresTitle"/>
+            <TextView
+                android:id="@+id/activity_movie_details_tvMovieSynopsis"
+                android:layout_margin="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:layout_margin="4dp"
-            android:id="@+id/activity_movie_details_tvMovieGenres"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_margin="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="@string/activity_movie_details_movieGenresTitle"/>
+
+            <TextView
+                android:layout_margin="4dp"
+                android:id="@+id/activity_movie_details_tvMovieGenres"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

@@ -34,7 +34,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView mTvMovieGenres;
     private TextView mTvMovieSynopsis;
 
-
+    private int mMovieId;
     private JSONObject mMovieData;
     private static final String movieTitleJsonKey = "title";
     private static final String moviePosterUrlJsonKey = "poster_url";
@@ -43,6 +43,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private RequestQueue mRequestQueue;
 
+    private View mScreenLayout;
     private ProgressBar mProgressBar;
     private TextView mTvError;
     private TextView mTvTouchToReload;
@@ -55,6 +56,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        mScreenLayout = findViewById(R.id.activity_movie_details_screenLayout);
         mProgressBar = findViewById(R.id.activity_movie_details_progressBar);
         mTvError = findViewById(R.id.activity_movie_details_tvError);
         mTvTouchToReload = findViewById(R.id.activity_movie_details_tvTouchToReload);
@@ -67,19 +69,31 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // Update request state
         mMovieDetailsRequestState = RequestState.NOT_REQUESTED;
 
+        // Allow reloading page if got error on request
+        mScreenLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mMovieDetailsRequestState == RequestState.ERROR){
+                    removeErrorInformation();
+                    requestMovieDetails();
+                }
+            }
+        });
+
+
         // Get movie id to be displayed
         Bundle data = getIntent().getExtras();
-        int movieId;
+
         if(data == null){
             // TODO: add error treatment here
             return;
         }
-        movieId = data.getInt(MainActivity.movieIdIntentKey);
+        mMovieId = data.getInt(MainActivity.movieIdIntentKey);
 
         mRequestQueue = Volley.newRequestQueue(this);
 
         // Fetch movie data and call showMovieDetails to show the data.
-        requestMovieDetails(movieId);
+        requestMovieDetails();
     }
 
     /*
@@ -91,8 +105,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
             Remove the ProgressBar from the screen
             Treat error
      */
-    private void requestMovieDetails(int movieId){
-        String movieURL = IPAddresses.MOVIES_API_URL + '/' + movieId;
+    private void requestMovieDetails(){
+        showProgressBar();
+        String movieURL = IPAddresses.MOVIES_API_URL + '/' + mMovieId;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 movieURL,
@@ -103,6 +118,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         // Update request state
                         mMovieDetailsRequestState = RequestState.SUCCESSFUL;
 
+                        /* No more need to detect clicks for reloading the screen, because the
+                         request for data was successful */
+                        mScreenLayout.setOnClickListener(null);
+
+                        // Store the movie details
                         mMovieData = response;
 
                         /* Remove progress bar because at this point we already have the JSONObject
@@ -110,6 +130,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         removeProgressBar();
 
                         Log.d(TAG, "Movie details response: " + response.toString());
+
                         showMovieDetails();
                     }
                 },
@@ -137,6 +158,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mMovieDetailsRequestState = RequestState.REQUESTED;
     }
 
+    // Show progress bar from the screen
+    private void showProgressBar(){
+        mProgressBar.setVisibility(View.VISIBLE);
+
+    }
+
     // Remove progress bar from the screen
     private void removeProgressBar(){
         mProgressBar.setVisibility(View.GONE);
@@ -150,6 +177,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mTvError.setVisibility(View.VISIBLE);
         // Inform the user that he can reload the screen by touching it
         mTvTouchToReload.setVisibility(View.VISIBLE);
+    }
+
+    // Remove information about the error
+    private void removeErrorInformation(){
+        // Remove error TextView
+        mTvError.setVisibility(View.GONE);
+        // Remove advice
+        mTvTouchToReload.setVisibility(View.GONE);
     }
 
     // Show movie title, poster, genres and synopsis to the screen
