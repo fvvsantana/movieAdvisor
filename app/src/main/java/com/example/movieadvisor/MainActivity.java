@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             @Override
             public void onClick(View view) {
                 if(mMoviesRequestState == RequestState.ERROR){
-                    hideErrorInformation();
+                    removeErrorInformation();
                     requestMovies();
                 }
             }
@@ -164,11 +164,11 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         mTvTouchToReload.setVisibility(View.VISIBLE);
     }
 
-    // Hide information about the error
-    private void hideErrorInformation(){
-        // Hide error TextView
+    // Remove information about the error
+    private void removeErrorInformation(){
+        // Remove error TextView
         mTvError.setVisibility(View.GONE);
-        // Hide advice
+        // Remove advice
         mTvTouchToReload.setVisibility(View.GONE);
     }
 
