@@ -38,6 +38,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private static final String movieGenresJsonKey = "genres";
     private static final String movieSynopsisJsonKey = "overview";
 
+    private RequestQueue mRequestQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         }
         movieId = data.getInt(MainActivity.movieIdIntentKey);
 
+        mRequestQueue = Volley.newRequestQueue(this);
+
         // Fetch movie data and call showMovieDetails to show the data.
         requestMovieDetails(movieId);
     }
@@ -73,7 +77,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     private void requestMovieDetails(int movieId){
         String movieURL = IPAddresses.MOVIES_API_URL + '/' + movieId;
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 movieURL,
@@ -104,7 +107,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                 }
         );
-        requestQueue.add(jsonObjectRequest);
+        mRequestQueue.add(jsonObjectRequest);
 
     }
 
