@@ -44,6 +44,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private RequestQueue mRequestQueue;
 
     private View mScreenLayout;
+    private View mContent;
     private ProgressBar mProgressBar;
     private TextView mTvError;
     private TextView mTvTouchToReload;
@@ -56,7 +57,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+
         mScreenLayout = findViewById(R.id.activity_movie_details_screenLayout);
+        mContent = findViewById(R.id.activity_movie_details_content);
         mProgressBar = findViewById(R.id.activity_movie_details_progressBar);
         mTvError = findViewById(R.id.activity_movie_details_tvError);
         mTvTouchToReload = findViewById(R.id.activity_movie_details_tvTouchToReload);
@@ -185,10 +188,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mTvError.setVisibility(View.GONE);
         // Remove advice
         mTvTouchToReload.setVisibility(View.GONE);
+
+    }
+
+    // Show movie details
+    private void showContent(){
+        mContent.setVisibility(View.VISIBLE);
+    }
+
+    // Remove movie details
+    private void removeContent(){
+        mContent.setVisibility(View.GONE);
     }
 
     // Show movie title, poster, genres and synopsis to the screen
     private void showMovieDetails(){
+        showContent();
         try{
             // Title
             String movieTitle = mMovieData.getString(movieTitleJsonKey);
