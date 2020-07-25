@@ -17,6 +17,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.util.IPAddresses;
 import com.example.movieadvisor.util.RequestState;
+import com.example.movieadvisor.util.VolleyErrorHelper;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -26,7 +27,8 @@ import org.json.JSONObject;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = "MovieDetailsActivity";
-    private ProgressBar mProgressBar;
+
+
     private TextView mTvMovieTitle;
     private ImageView mImMoviePoster;
     private TextView mTvMovieGenres;
@@ -41,6 +43,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private RequestQueue mRequestQueue;
 
+    private ProgressBar mProgressBar;
+    private TextView mTvError;
+    private TextView mTvTouchToReload;
+
     // Variable to track the states of the request for the movie details
     private RequestState mMovieDetailsRequestState;
 
@@ -50,6 +56,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_details);
 
         mProgressBar = findViewById(R.id.activity_movie_details_progressBar);
+        mTvError = findViewById(R.id.activity_movie_details_tvError);
+        mTvTouchToReload = findViewById(R.id.activity_movie_details_tvTouchToReload);
+
         mTvMovieTitle = findViewById(R.id.activity_movie_details_tvMovieTitle);
         mImMoviePoster = findViewById(R.id.activity_movie_details_imMoviePoster);
         mTvMovieGenres = findViewById(R.id.activity_movie_details_tvMovieGenres);
@@ -113,6 +122,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         // Remove progress bar
                         removeProgressBar();
 
+                        // Show information about the error and how to reload the screen
+                        showErrorInformation(error);
+
                         // Update request state
                         mMovieDetailsRequestState = RequestState.ERROR;
                         // TODO: treat errors
@@ -131,6 +143,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     }
 
+    // Show information about the error and how to reload the screen
+    private void showErrorInformation(VolleyError error){
+        // Show error information
+        mTvError.setText(VolleyErrorHelper.getMessage(error, MovieDetailsActivity.this));
+        mTvError.setVisibility(View.VISIBLE);
+        // Inform the user that he can reload the screen by touching it
+        mTvTouchToReload.setVisibility(View.VISIBLE);
+    }
 
     // Show movie title, poster, genres and synopsis to the screen
     private void showMovieDetails(){
