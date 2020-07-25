@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         mTvError = findViewById(R.id.activity_main_tvError);
         mTvTouchToReload = findViewById(R.id.activity_main_tvTouchToReload);
 
+        // Update request state
         mMoviesRequestState = RequestState.NOT_REQUESTED;
 
 
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        // Update request information
+                        // Update request state
                         mMoviesRequestState = RequestState.SUCCESSFUL;
 
                         /* No more need to detect clicks for reloading the screen, because the
@@ -132,13 +133,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                         // Show information about the error and how to reload the screen
                         showErrorInformation(error);
 
-                        // Update request information
+                        // Update request state
                         mMoviesRequestState = RequestState.ERROR;
                     }
                 }
         );
         mRequestQueue.add(jsonArrayRequest);
-        // Update request information
+        // Update request state
         mMoviesRequestState = RequestState.REQUESTED;
     }
 
