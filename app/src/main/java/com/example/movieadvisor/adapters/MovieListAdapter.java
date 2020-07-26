@@ -49,7 +49,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
         @Override
         public void onClick(View view) {
-            // Inform the main activity that this viewholder was clicked
+            // Inform the main activity that this ViewHolder was clicked
             mMovieOnClickListener.movieOnClick(getAdapterPosition());
         }
 
