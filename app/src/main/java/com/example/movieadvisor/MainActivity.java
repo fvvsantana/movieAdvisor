@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -138,8 +137,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                         // Remove progress bar because at this point we already have the JSONArray of movies
                         removeProgressBar();
 
-                        Log.d(TAG, "Movies response: " + response.toString());
-
                         showMoviesList();
                     }
                 },
@@ -147,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Log.e(TAG, "Error on fetching movies: " + error.toString());
 
                         // Remove undesired views
                         removeProgressBar();

@@ -3,7 +3,6 @@ package com.example.movieadvisor;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -144,8 +143,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                             with the details of the movie */
                         removeProgressBar();
 
-                        Log.d(TAG, "Movie details response: " + response.toString());
-
                         showMovieDetails();
                     }
                 },
@@ -153,7 +150,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Log.e(TAG, "Error on fetching movie details: " + error.toString());
 
                         // Remove undesired views
                         removeProgressBar();
