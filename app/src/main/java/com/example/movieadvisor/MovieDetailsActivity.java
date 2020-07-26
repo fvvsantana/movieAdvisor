@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,7 +29,6 @@ import org.json.JSONObject;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = "MovieDetailsActivity";
-
 
     private TextView mTvMovieTitle;
     private ImageView mImMoviePoster;
@@ -75,7 +75,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         Bundle data = getIntent().getExtras();
 
         if(data == null){
-            // TODO: add error treatment here
+            Toast.makeText(this, R.string.error_internalError, Toast.LENGTH_SHORT).show();
             return;
         }
         mMovieId = data.getInt(MainActivity.movieIdIntentKey);
@@ -89,6 +89,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     // Get reference for the error fragment and setup retry button
     private void setupErrorFragment() {
         mErrorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.activity_movie_details_errorFragment);
+        // TODO: handle this error
         if (mErrorFragment != null) {
             // Don't show error fragment
             mErrorFragment.remove();
@@ -105,6 +106,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                 }
             });
+        }else{
+            Toast.makeText(this, R.string.error_internalError, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -211,7 +214,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         }catch(JSONException e){
             e.printStackTrace();
-            // TODO: treat errors
+            Toast.makeText(this, R.string.error_parsingError, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -231,17 +234,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     // Load image from the passed imageURL to an ImageView
     private void loadImage(String imageURL, ImageView imageView){
-        // TODO: read the documentation of this method to see if I need to do something more (Ctrl+Q)
         Picasso.get().load(imageURL).error(R.mipmap.no_image_100).into(imageView, new Callback() {
-
             @Override
-            public void onSuccess() {
-
-            }
+            public void onSuccess() { }
 
             @Override
             public void onError(Exception e) {
-                // TODO: treat errors
                 e.printStackTrace();
             }
         });
