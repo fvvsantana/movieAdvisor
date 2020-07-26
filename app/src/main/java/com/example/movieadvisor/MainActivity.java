@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         setupErrorFragment();
 
         mContent = findViewById(R.id.activity_main_content);
+        // Show content layout only when the data is ready
         removeContent();
         mProgressBar = findViewById(R.id.activity_main_progressBar);
 

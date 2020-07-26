@@ -24,6 +24,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     private ViewHolder.MovieOnClickListener mMovieListener;
 
+    // A ViewHolder object can be seen as the representation of an item (a movie) in the list
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public interface MovieOnClickListener{
@@ -72,16 +73,17 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         return new ViewHolder(view, mMovieListener);
     }
 
-    // Fill the ViewHolder from the JSONArray information
+    // Fill a ViewHolder's fields from the JSONArray information
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try{
             JSONObject jsonObject = mMoviesData.getJSONObject(position);
 
+            // Set title
             String movieTitle = jsonObject.getString("title");
             holder.mTvMovieTitle.setText(movieTitle);
 
-
+            // Set poster
             String moviePosterURL = jsonObject.getString("poster_url");
             // TODO: treat errors on image loading
             //Picasso.get().load(moviePosterURL).into(holder.mIvMoviePoster);
@@ -92,15 +94,16 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         }
     }
 
+    // Return the size of the data set
     @Override
     public int getItemCount() {
         return mMoviesData.length();
     }
 
+    // Load image from the passed imageURL to an ImageView
     private void loadImage(String imageURL, ImageView imageView){
         // TODO: read the documentation of this method to see if I need to do something more (Ctrl+Q)
         Picasso.get().load(imageURL).error(R.mipmap.no_image_100).into(imageView, new Callback() {
-
             @Override
             public void onSuccess() {
 

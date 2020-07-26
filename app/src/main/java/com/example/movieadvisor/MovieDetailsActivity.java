@@ -59,6 +59,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         setupErrorFragment();
 
         mContent = findViewById(R.id.activity_movie_details_content);
+        // Show content layout only when the data is ready
         removeContent();
         mProgressBar = findViewById(R.id.activity_movie_details_progressBar);
 
@@ -228,6 +229,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         return aux.toString();
     }
 
+    // Load image from the passed imageURL to an ImageView
     private void loadImage(String imageURL, ImageView imageView){
         // TODO: read the documentation of this method to see if I need to do something more (Ctrl+Q)
         Picasso.get().load(imageURL).error(R.mipmap.no_image_100).into(imageView, new Callback() {
