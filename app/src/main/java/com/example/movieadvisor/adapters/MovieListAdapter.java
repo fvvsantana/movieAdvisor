@@ -1,10 +1,12 @@
 package com.example.movieadvisor.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +21,8 @@ import org.json.JSONObject;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
     private static final String TAG = "MovieListAdapter";
+
+    private Context mContext;
 
     private JSONArray mMoviesData;
     private static final String movieTitleJsonKey = "title";
@@ -61,10 +65,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
      Receive the data about the movies to be shown.
      Receive an object that will listen to clicks on the movies.
     */
-    public MovieListAdapter(JSONArray moviesData, ViewHolder.MovieOnClickListener movieListener){
+    public MovieListAdapter(Context context, JSONArray moviesData, ViewHolder.MovieOnClickListener movieListener){
+        mContext = context;
         mMoviesData = moviesData;
         mMovieListener = movieListener;
-        // TODO: treat errors when looping through the JSONArray, because a parsing error could happen
     }
 
     // Inflate layout from xml and create a ViewHolder to be bound to a position by the adapter
@@ -88,11 +92,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
             // Set poster
             String moviePosterURL = jsonObject.getString(moviePosterUrlJsonKey);
             // TODO: treat errors on image loading
-            //Picasso.get().load(moviePosterURL).into(holder.mIvMoviePoster);
             loadImage(moviePosterURL, holder.mIvMoviePoster);
         }catch(JSONException e){
             e.printStackTrace();
-            // TODO: treat this parsing error
+            Toast.makeText(mContext, R.string.error_parsingError, Toast.LENGTH_SHORT).show();
         }
     }
 

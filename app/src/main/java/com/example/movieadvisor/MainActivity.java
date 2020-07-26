@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     // Show movies to the screen
     private void showMoviesList(){
         showContent();
-        mAdapter = new MovieListAdapter(mMoviesData, this);
+        mAdapter = new MovieListAdapter(this, mMoviesData, this);
         mRvMoviesList.setAdapter(mAdapter);
     }
 
