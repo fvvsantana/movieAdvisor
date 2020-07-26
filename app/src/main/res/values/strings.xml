@@ -5,6 +5,7 @@
     <string name="error_timeoutError">Timeout Error</string>
     <string name="error_noInternetConnection">No internet connection</string>
     <string name="error_parsingError">Error parsing data</string>
+    <string name="error_internalError">Internal error</string>
 
     <string name="fragment_error_btnRetry">Retry</string>
 

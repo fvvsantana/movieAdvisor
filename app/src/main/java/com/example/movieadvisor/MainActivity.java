@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                     }
                 }
             });
+        }else{
+            Toast.makeText(this, R.string.error_internalError, Toast.LENGTH_SHORT).show();
         }
     }
 
