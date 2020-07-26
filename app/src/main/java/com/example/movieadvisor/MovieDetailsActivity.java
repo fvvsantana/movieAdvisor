@@ -15,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.movieadvisor.fragments.ErrorFragment;
 import com.example.movieadvisor.util.IPAddresses;
 import com.example.movieadvisor.util.RequestState;
 import com.example.movieadvisor.util.VolleyErrorHelper;
@@ -43,12 +44,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private RequestQueue mRequestQueue;
 
-    private View mScreenLayout;
     private View mContent;
     private ProgressBar mProgressBar;
-    private TextView mTvError;
-    private TextView mTvTouchToReload;
-
+    private ErrorFragment mErrorFragment;
     // Variable to track the states of the request for the movie details
     private RequestState mMovieDetailsRequestState;
 
@@ -57,12 +55,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        // Get reference for the error fragment and setup retry button
+        setupErrorFragment();
 
-        mScreenLayout = findViewById(R.id.activity_movie_details_screenLayout);
         mContent = findViewById(R.id.activity_movie_details_content);
         mProgressBar = findViewById(R.id.activity_movie_details_progressBar);
-        mTvError = findViewById(R.id.activity_movie_details_tvError);
-        mTvTouchToReload = findViewById(R.id.activity_movie_details_tvTouchToReload);
 
         mTvMovieTitle = findViewById(R.id.activity_movie_details_tvMovieTitle);
         mImMoviePoster = findViewById(R.id.activity_movie_details_imMoviePoster);
@@ -71,18 +68,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Update request state
         mMovieDetailsRequestState = RequestState.NOT_REQUESTED;
-
-        // Allow reloading page if got error on request
-        mScreenLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mMovieDetailsRequestState == RequestState.ERROR){
-                    removeErrorInformation();
-                    requestMovieDetails();
-                }
-            }
-        });
-
 
         // Get movie id to be displayed
         Bundle data = getIntent().getExtras();
@@ -97,6 +82,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Fetch movie data and call showMovieDetails to show the data.
         requestMovieDetails();
+    }
+
+    // Get reference for the error fragment and setup retry button
+    private void setupErrorFragment() {
+        mErrorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.activity_movie_details_errorFragment);
+        if (mErrorFragment != null) {
+            // Don't show error fragment
+            mErrorFragment.remove();
+
+            /*
+            This is called when the user clicks the "retry button".
+            Remove error fragment and request movies again. */
+            mErrorFragment.setRetryButtonOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mMovieDetailsRequestState == RequestState.ERROR) {
+                        mErrorFragment.remove();
+                        requestMovieDetails();
+                    }
+                }
+            });
+        }
     }
 
     /*
@@ -123,7 +130,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                         /* No more need to detect clicks for reloading the screen, because the
                          request for data was successful */
-                        mScreenLayout.setOnClickListener(null);
+                        mErrorFragment.setRetryButtonOnClickListener(null);
 
                         // Store the movie details
                         mMovieData = response;
@@ -143,11 +150,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         error.printStackTrace();
                         Log.e(TAG, "Error on fetching movie details: " + error.toString());
 
-                        // Remove progress bar
+                        // Remove undesired views
                         removeProgressBar();
+                        removeContent();
 
-                        // Show information about the error and how to reload the screen
-                        showErrorInformation(error);
+                        // Show error message + retry button
+                        mErrorFragment.show(VolleyErrorHelper.getMessage(error, MovieDetailsActivity.this));
 
                         // Update request state
                         mMovieDetailsRequestState = RequestState.ERROR;
@@ -169,24 +177,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     // Remove progress bar from the screen
     private void removeProgressBar(){
         mProgressBar.setVisibility(View.GONE);
-
-    }
-
-    // Show information about the error and how to reload the screen
-    private void showErrorInformation(VolleyError error){
-        // Show error information
-        mTvError.setText(VolleyErrorHelper.getMessage(error, MovieDetailsActivity.this));
-        mTvError.setVisibility(View.VISIBLE);
-        // Inform the user that he can reload the screen by touching it
-        mTvTouchToReload.setVisibility(View.VISIBLE);
-    }
-
-    // Remove information about the error
-    private void removeErrorInformation(){
-        // Remove error TextView
-        mTvError.setVisibility(View.GONE);
-        // Remove advice
-        mTvTouchToReload.setVisibility(View.GONE);
 
     }
 

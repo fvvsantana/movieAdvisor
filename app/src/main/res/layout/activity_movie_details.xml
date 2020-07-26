@@ -21,22 +21,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/activity_movie_details_tvError"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/activity_movie_details_tvTouchToReload"
-            android:visibility="gone"
-            android:text="@string/error_touchToReload"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        <fragment
+            android:id="@+id/activity_movie_details_errorFragment"
+            android:name="com.example.movieadvisor.fragments.ErrorFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_error" />
 
         <LinearLayout
             android:id="@+id/activity_movie_details_content"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

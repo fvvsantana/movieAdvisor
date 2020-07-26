@@ -13,7 +13,4 @@
     <string name="activity_movie_details_movieSynopsisTitle">Synopsis</string>
     <string name="activity_movie_details_movieGenresTitle">Genres</string>
 
-
-    <string name="error_touchToReload">Touch the screen to retry</string>
-
 </resources>
