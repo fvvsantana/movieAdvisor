@@ -91,7 +91,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
             // Set poster
             String moviePosterURL = jsonObject.getString(moviePosterUrlJsonKey);
-            // TODO: treat errors on image loading
             loadImage(moviePosterURL, holder.mIvMoviePoster);
         }catch(JSONException e){
             e.printStackTrace();
@@ -107,16 +106,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     // Load image from the passed imageURL to an ImageView
     private void loadImage(String imageURL, ImageView imageView){
-        // TODO: read the documentation of this method to see if I need to do something more (Ctrl+Q)
         Picasso.get().load(imageURL).error(R.mipmap.no_image_100).into(imageView, new Callback() {
             @Override
-            public void onSuccess() {
-
-            }
+            public void onSuccess() { }
 
             @Override
             public void onError(Exception e) {
-                // TODO: treat errors
                 e.printStackTrace();
             }
         });
