@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -211,8 +211,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             intent.putExtra(movieIdIntentKey, movieId);
             startActivity(intent);
         }catch(JSONException e){
-            // TODO: treat error
             e.printStackTrace();
+            Toast.makeText(this, R.string.error_parsingError, Toast.LENGTH_SHORT).show();
         }
     }
 
