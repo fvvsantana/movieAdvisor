@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     private RequestQueue mRequestQueue;
 
+    private View mContent;
     private ProgressBar mProgressBar;
     private ErrorFragment mErrorFragment;
     // Variable to track the states of the request for the movies list
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         // Get reference for the error fragment and setup retry button
         setupErrorFragment();
 
+        mContent = findViewById(R.id.activity_main_content);
+        removeContent();
         mProgressBar = findViewById(R.id.activity_main_progressBar);
 
         // Update request state
@@ -143,8 +146,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                         error.printStackTrace();
                         Log.e(TAG, "Error on fetching movies: " + error.toString());
 
-                        // Remove progress bar
+                        // Remove undesired views
                         removeProgressBar();
+                        removeContent();
 
                         // Show error message + retry button
                         mErrorFragment.show(VolleyErrorHelper.getMessage(error, MainActivity.this));
@@ -171,8 +175,19 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     }
 
+    // Show movie details
+    private void showContent(){
+        mContent.setVisibility(View.VISIBLE);
+    }
+
+    // Remove movie details
+    private void removeContent(){
+        mContent.setVisibility(View.GONE);
+    }
+
     // Show movies to the screen
     private void showMoviesList(){
+        showContent();
         mAdapter = new MovieListAdapter(mMoviesData, this);
         mRvMoviesList.setAdapter(mAdapter);
     }

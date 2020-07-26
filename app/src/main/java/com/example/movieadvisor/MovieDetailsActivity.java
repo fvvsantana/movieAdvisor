@@ -59,6 +59,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         setupErrorFragment();
 
         mContent = findViewById(R.id.activity_movie_details_content);
+        removeContent();
         mProgressBar = findViewById(R.id.activity_movie_details_progressBar);
 
         mTvMovieTitle = findViewById(R.id.activity_movie_details_tvMovieTitle);

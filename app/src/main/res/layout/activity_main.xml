@@ -20,11 +20,19 @@
         android:layout_height="wrap_content"
         tools:layout="@layout/fragment_error" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
+        android:id="@+id/activity_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_main_rvMoviesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"/>
+
+    </LinearLayout>
 
 
 
