@@ -70,10 +70,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     // Get reference for the error fragment and setup retry button
     private void setupErrorFragment() {
         mErrorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.activity_main_errorFragment);
-        /*
+        if (mErrorFragment != null) {
+            // Don't show error fragment
+            mErrorFragment.remove();
+
+            /*
             This is called when the user clicks the "retry button".
             Remove error fragment and request movies again. */
-        if (mErrorFragment != null) {
             mErrorFragment.setRetryButtonOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
