@@ -21,6 +21,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     private static final String TAG = "MovieListAdapter";
 
     private JSONArray mMoviesData;
+    private static final String movieTitleJsonKey = "title";
+    private static final String moviePosterUrlJsonKey = "poster_url";
 
     private ViewHolder.MovieOnClickListener mMovieListener;
 
@@ -80,11 +82,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
             JSONObject jsonObject = mMoviesData.getJSONObject(position);
 
             // Set title
-            String movieTitle = jsonObject.getString("title");
+            String movieTitle = jsonObject.getString(movieTitleJsonKey);
             holder.mTvMovieTitle.setText(movieTitle);
 
             // Set poster
-            String moviePosterURL = jsonObject.getString("poster_url");
+            String moviePosterURL = jsonObject.getString(moviePosterUrlJsonKey);
             // TODO: treat errors on image loading
             //Picasso.get().load(moviePosterURL).into(holder.mIvMoviePoster);
             loadImage(moviePosterURL, holder.mIvMoviePoster);
