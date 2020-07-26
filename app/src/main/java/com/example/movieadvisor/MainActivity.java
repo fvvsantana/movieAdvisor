@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.adapters.MovieListAdapter;
+import com.example.movieadvisor.fragments.ErrorFragment;
 import com.example.movieadvisor.util.IPAddresses;
 import com.example.movieadvisor.util.RequestState;
 import com.example.movieadvisor.util.VolleyErrorHelper;
@@ -38,10 +39,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     private RequestQueue mRequestQueue;
 
-    private View mScreenLayout;
     private ProgressBar mProgressBar;
-    private TextView mTvError;
-    private TextView mTvTouchToReload;
+    private ErrorFragment mErrorFragment;
     // Variable to track the states of the request for the movies list
     private RequestState mMoviesRequestState;
 
@@ -50,26 +49,45 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mScreenLayout = findViewById(R.id.activity_main_screenLayout);
+        // Get reference for the error fragment and setup retry button
+        setupErrorFragment();
+
         mProgressBar = findViewById(R.id.activity_main_progressBar);
-        mTvError = findViewById(R.id.activity_main_tvError);
-        mTvTouchToReload = findViewById(R.id.activity_main_tvTouchToReload);
 
         // Update request state
         mMoviesRequestState = RequestState.NOT_REQUESTED;
 
+        // Get reference to RecyclerView and set its parameters
+        setupRecyclerView();
 
-        // Allow reloading page if got error on request
-        mScreenLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mMoviesRequestState == RequestState.ERROR){
-                    removeErrorInformation();
-                    requestMovies();
+        // Queue for adding the network requests
+        mRequestQueue = Volley.newRequestQueue(this);
+
+        // Request the list of movies asynchronously and show movies when responded
+        requestMovies();
+    }
+
+    // Get reference for the error fragment and setup retry button
+    private void setupErrorFragment() {
+        mErrorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.activity_main_errorFragment);
+        /*
+            This is called when the user clicks the "retry button".
+            Remove error fragment and request movies again. */
+        if (mErrorFragment != null) {
+            mErrorFragment.setRetryButtonOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mMoviesRequestState == RequestState.ERROR) {
+                        mErrorFragment.remove();
+                        requestMovies();
+                    }
                 }
-            }
-        });
+            });
+        }
+    }
 
+    // Get reference to RecyclerView and set its parameters
+    private void setupRecyclerView(){
         // RecyclerView for the list of movies
         mRvMoviesList = findViewById(R.id.activity_main_rvMoviesList);
         // Use this setting to improve performance if you know that changes
@@ -78,11 +96,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         // Use a linear layout manager for the layout of the list of movies
         mLayoutManager = new LinearLayoutManager(this);
         mRvMoviesList.setLayoutManager(mLayoutManager);
-
-        mRequestQueue = Volley.newRequestQueue(this);
-
-        // Request the list of movies asynchronously and show movies when responded
-        requestMovies();
     }
 
     /*
@@ -108,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
                         /* No more need to detect clicks for reloading the screen, because the
                          request for data was successful */
-                        mScreenLayout.setOnClickListener(null);
+                        mErrorFragment.setRetryButtonOnClickListener(null);
 
                         // Store the list of movies
                         mMoviesData = response;
@@ -130,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                         // Remove progress bar
                         removeProgressBar();
 
-                        // Show information about the error and how to reload the screen
-                        showErrorInformation(error);
+                        // Show error message + retry button
+                        mErrorFragment.show(VolleyErrorHelper.getMessage(error, MainActivity.this));
 
                         // Update request state
                         mMoviesRequestState = RequestState.ERROR;
@@ -153,23 +166,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     private void removeProgressBar(){
         mProgressBar.setVisibility(View.GONE);
 
-    }
-
-    // Show information about the error and how to reload the screen
-    private void showErrorInformation(VolleyError error){
-        // Show error information
-        mTvError.setText(VolleyErrorHelper.getMessage(error, MainActivity.this));
-        mTvError.setVisibility(View.VISIBLE);
-        // Inform the user that he can reload the screen by touching it
-        mTvTouchToReload.setVisibility(View.VISIBLE);
-    }
-
-    // Remove information about the error
-    private void removeErrorInformation(){
-        // Remove error TextView
-        mTvError.setVisibility(View.GONE);
-        // Remove advice
-        mTvTouchToReload.setVisibility(View.GONE);
     }
 
     // Show movies to the screen
