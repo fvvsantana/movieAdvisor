@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Picasso debugging
+        // Uncomment this line to enable Picasso's debugging
         //Picasso.get().setIndicatorsEnabled(true);
 
         // Get reference for the error fragment and setup retry button
