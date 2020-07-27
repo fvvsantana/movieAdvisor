@@ -21,6 +21,7 @@ import com.example.movieadvisor.fragments.ErrorFragment;
 import com.example.movieadvisor.util.IPAddresses;
 import com.example.movieadvisor.util.RequestState;
 import com.example.movieadvisor.util.VolleyErrorHelper;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Picasso debugging
+        //Picasso.get().setIndicatorsEnabled(true);
 
         // Get reference for the error fragment and setup retry button
         setupErrorFragment();
