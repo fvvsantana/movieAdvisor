@@ -106,15 +106,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     // Load image from the passed imageURL to an ImageView
     private void loadImage(String imageURL, ImageView imageView){
-        Picasso.get().load(imageURL).error(R.mipmap.no_image_100).into(imageView, new Callback() {
-            @Override
-            public void onSuccess() { }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
+        Picasso.get().load(imageURL).error(R.mipmap.no_image_100).into(imageView);
 
     }
 
