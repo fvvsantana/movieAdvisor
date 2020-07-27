@@ -10,14 +10,17 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.adapters.MovieListAdapter;
 import com.example.movieadvisor.fragments.ErrorFragment;
+import com.example.movieadvisor.util.CacheRequest;
 import com.example.movieadvisor.util.IPAddresses;
 import com.example.movieadvisor.util.RequestState;
 import com.example.movieadvisor.util.VolleyErrorHelper;
@@ -25,6 +28,8 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.io.UnsupportedEncodingException;
 
 
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.ViewHolder.MovieOnClickListener{
@@ -121,13 +126,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
      */
     private void requestMovies(){
         showProgressBar();
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+        CacheRequest cacheRequest = new CacheRequest(
                 Request.Method.GET,
                 IPAddresses.MOVIES_API_URL,
-                null,
-                new Response.Listener<JSONArray>() {
+                new Response.Listener<NetworkResponse>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(NetworkResponse response) {
+
                         // Update request state
                         mMoviesRequestState = RequestState.SUCCESSFUL;
 
@@ -135,8 +140,16 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                          request for data was successful */
                         mErrorFragment.setRetryButtonOnClickListener(null);
 
-                        // Store the list of movies
-                        mMoviesData = response;
+                        // Parse JSONArray
+                        try {
+                            final String jsonArrayString = new String(response.data,
+                                    HttpHeaderParser.parseCharset(response.headers));
+                            // Store the list of movies
+                            mMoviesData = new JSONArray(jsonArrayString);
+                        } catch (UnsupportedEncodingException | JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(MainActivity.this, R.string.error_parsingError, Toast.LENGTH_SHORT).show();
+                        }
 
                         // Remove progress bar because at this point we already have the JSONArray of movies
                         removeProgressBar();
@@ -161,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                     }
                 }
         );
-        mRequestQueue.add(jsonArrayRequest);
+        mRequestQueue.add(cacheRequest);
         // Update request state
         mMoviesRequestState = RequestState.REQUESTED;
     }
