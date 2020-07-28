@@ -1,5 +1,7 @@
 package com.example.movieadvisor.util;
 
+import android.util.Log;
+
 import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -8,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 public class CacheRequest extends Request<NetworkResponse> {
+    private static final String TAG = "CacheRequest";
     private final Response.Listener<NetworkResponse> mListener;
     private final Response.ErrorListener mErrorListener;
 
@@ -20,12 +23,17 @@ public class CacheRequest extends Request<NetworkResponse> {
 
     @Override
     protected Response<NetworkResponse> parseNetworkResponse(NetworkResponse response) {
+        Log.d(TAG, "parseNetworkResponse: called");
         Cache.Entry cacheEntry = HttpHeaderParser.parseCacheHeaders(response);
         if (cacheEntry == null) {
             cacheEntry = new Cache.Entry();
         }
-        final long cacheHitButRefreshed = 3 * 60 * 1000; // in 3 minutes cache will be hit, but also refreshed on background
-        final long cacheExpired = 24 * 60 * 60 * 1000; // in 24 hours this cache entry expires completely
+
+        // TODO: Get these variables back to the original value
+        //final long cacheHitButRefreshed = 3 * 60 * 1000; // in 3 minutes cache will be hit, but also refreshed on background
+        final long cacheHitButRefreshed = 2 * 1000; // in 3 minutes cache will be hit, but also refreshed on background
+        //final long cacheExpired = 24 * 60 * 60 * 1000; // in 24 hours this cache entry expires completely
+        final long cacheExpired = 10 * 1000; // in 24 hours this cache entry expires completely
         long now = System.currentTimeMillis();
         final long softExpire = now + cacheHitButRefreshed;
         final long ttl = now + cacheExpired;
@@ -47,16 +55,25 @@ public class CacheRequest extends Request<NetworkResponse> {
 
     @Override
     protected void deliverResponse(NetworkResponse response) {
+        Log.d(TAG, "deliverResponse: called");
         mListener.onResponse(response);
     }
 
     @Override
     protected VolleyError parseNetworkError(VolleyError volleyError) {
+        Log.d(TAG, "parseNetworkError: called");
         return super.parseNetworkError(volleyError);
     }
 
     @Override
     public void deliverError(VolleyError error) {
+        Log.d(TAG, "deliverError: called");
         mErrorListener.onErrorResponse(error);
+        Cache.Entry cacheEntry = getCacheEntry();
+        if(VolleyErrorHelper.isNetworkProblem(error) && cacheEntry.isExpired()){
+            NetworkResponse networkResponse = new NetworkResponse(cacheEntry.data);
+            mListener.onResponse(networkResponse);
+        }
     }
+    
 }

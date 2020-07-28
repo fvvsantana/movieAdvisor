@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         setContentView(R.layout.activity_main);
 
         // Uncomment this line to enable Picasso's debugging
-        //Picasso.get().setIndicatorsEnabled(true);
+        Picasso.get().setIndicatorsEnabled(true);
 
         // Get reference for the error fragment and setup retry button
         setupErrorFragment();
@@ -126,19 +128,29 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
      */
     private void requestMovies(){
         showProgressBar();
+        Cache.Entry cacheEntry = mRequestQueue.getCache().get(IPAddresses.MOVIES_API_URL);
+        if(cacheEntry != null){
+            Log.d(TAG, "requestMovies: cache-hit!");
+            if(cacheEntry.isExpired()){
+                Log.d(TAG, "requestMovies: is expired");
+            }
+            if(cacheEntry.refreshNeeded()){
+                Log.d(TAG, "requestMovies: refresh needed");
+            }
+        }else{
+            Log.d(TAG, "requestMovies: cache-miss!");
+        }
+
         CacheRequest cacheRequest = new CacheRequest(
                 Request.Method.GET,
                 IPAddresses.MOVIES_API_URL,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
+                        Log.d(TAG, "onResponse called");
 
                         // Update request state
                         mMoviesRequestState = RequestState.SUCCESSFUL;
-
-                        /* No more need to detect clicks for reloading the screen, because the
-                         request for data was successful */
-                        mErrorFragment.setRetryButtonOnClickListener(null);
 
                         // Parse JSONArray
                         try {
@@ -160,6 +172,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        // If the user is offline and there is cache to be shown
+                        boolean thereIsCache = mRequestQueue.getCache().get(IPAddresses.MOVIES_API_URL) != null;
+                        if(VolleyErrorHelper.isNetworkProblem(error) && thereIsCache){
+                            return;
+                        }
+
+                        Log.d(TAG, "onErrorResponse called");
                         error.printStackTrace();
 
                         // Remove undesired views
