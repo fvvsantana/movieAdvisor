@@ -5,11 +5,11 @@ This is an Android app that shows movie recommendations. All the information are
 
 Screen of movie recommendations:
 
-![](moviesList.png)
+![](moviesList.png =250x)
 
 Screen of movie details:
 
-![](movieDetails.png)
+![](movieDetails.png =100x)
 
 The app was developed using the Android Studio.
 
