@@ -129,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
      */
     private void requestMovies(){
         showProgressBar();
-        Cache.Entry cacheEntry = mRequestQueue.getCache().get(IPAddresses.MOVIES_API_URL);
+        mMoviesURL = IPAddresses.MOVIES_API_URL;
+
+        Cache.Entry cacheEntry = mRequestQueue.getCache().get(mMoviesURL);
         if(cacheEntry != null){
             Log.d(TAG, "requestMovies: cache-hit!");
             if(cacheEntry.isExpired()){
@@ -142,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             Log.d(TAG, "requestMovies: cache-miss!");
         }
 
-        mMoviesURL = IPAddresses.MOVIES_API_URL;
         CacheRequest cacheRequest = new CacheRequest(
                 Request.Method.GET,
                 mMoviesURL,

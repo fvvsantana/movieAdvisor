@@ -69,7 +69,9 @@ public class CacheRequest extends Request<NetworkResponse> {
     public void deliverError(VolleyError error) {
         Log.d(TAG, "deliverError: called");
         mErrorListener.onErrorResponse(error);
+
         Cache.Entry cacheEntry = getCacheEntry();
+        if(cacheEntry == null) return;
         if(VolleyErrorHelper.isNetworkProblem(error) && cacheEntry.isExpired()){
             NetworkResponse networkResponse = new NetworkResponse(cacheEntry.data);
             mListener.onResponse(networkResponse);
