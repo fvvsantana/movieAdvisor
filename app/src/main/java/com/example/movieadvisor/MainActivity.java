@@ -6,19 +6,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.adapters.MovieListAdapter;
 import com.example.movieadvisor.fragments.ErrorFragment;
@@ -131,26 +128,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         showProgressBar();
         mMoviesURL = IPAddresses.MOVIES_API_URL;
 
-        Cache.Entry cacheEntry = mRequestQueue.getCache().get(mMoviesURL);
-        if(cacheEntry != null){
-            Log.d(TAG, "requestMovies: cache-hit!");
-            if(cacheEntry.isExpired()){
-                Log.d(TAG, "requestMovies: is expired");
-            }
-            if(cacheEntry.refreshNeeded()){
-                Log.d(TAG, "requestMovies: refresh needed");
-            }
-        }else{
-            Log.d(TAG, "requestMovies: cache-miss!");
-        }
-
         CacheRequest cacheRequest = new CacheRequest(
                 Request.Method.GET,
                 mMoviesURL,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
-                        Log.d(TAG, "onResponse called");
 
                         // Update request state
                         mMoviesRequestState = RequestState.SUCCESSFUL;
@@ -175,13 +158,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
                         // If the user is offline and there is cache to be shown
                         boolean thereIsCache = mRequestQueue.getCache().get(mMoviesURL) != null;
                         if(VolleyErrorHelper.isNetworkProblem(error) && thereIsCache){
                             return;
                         }
 
-                        Log.d(TAG, "onErrorResponse called");
                         error.printStackTrace();
 
                         // Remove undesired views

@@ -3,28 +3,24 @@ package com.example.movieadvisor;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.fragments.ErrorFragment;
 import com.example.movieadvisor.util.CacheRequest;
 import com.example.movieadvisor.util.IPAddresses;
 import com.example.movieadvisor.util.RequestState;
 import com.example.movieadvisor.util.VolleyErrorHelper;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -130,26 +126,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
         showProgressBar();
         mMovieURL = IPAddresses.MOVIES_API_URL + '/' + mMovieId;
 
-        Cache.Entry cacheEntry = mRequestQueue.getCache().get(mMovieURL);
-        if(cacheEntry != null){
-            Log.d(TAG, "requestMovies: cache-hit!");
-            if(cacheEntry.isExpired()){
-                Log.d(TAG, "requestMovies: is expired");
-            }
-            if(cacheEntry.refreshNeeded()){
-                Log.d(TAG, "requestMovies: refresh needed");
-            }
-        }else{
-            Log.d(TAG, "requestMovies: cache-miss!");
-        }
-
         CacheRequest cacheRequest = new CacheRequest(
                 Request.Method.GET,
                 mMovieURL,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
-                        Log.d(TAG, "onResponse: called");
+
                         // Update request state
                         mMovieDetailsRequestState = RequestState.SUCCESSFUL;
 
@@ -174,13 +157,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
                         // If the user is offline and there is cache to be shown
                         boolean thereIsCache = mRequestQueue.getCache().get(mMovieURL) != null;
                         if(VolleyErrorHelper.isNetworkProblem(error) && thereIsCache){
                             return;
                         }
 
-                        Log.d(TAG, "onErrorResponse called");
                         error.printStackTrace();
 
                         // Remove undesired views
