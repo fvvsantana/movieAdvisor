@@ -1,7 +1,7 @@
 # Movie Advisor
 
 ## Description
-This is an Android app that shows movie recommendations. All the information are fetched from an HTTP-based RESTful API and cached for offline access.
+This is an Android app that shows movie recommendations. All the information is fetched from an HTTP-based RESTful API and cached for offline access. The cache is also used when online to improve performance.
 
 Screen of movie recommendations:
 
