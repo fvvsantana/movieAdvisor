@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     private ErrorFragment mErrorFragment;
     // Variable to track the states of the request for the movies list
     private RequestState mMoviesRequestState;
+    private String mMoviesURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,9 +142,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             Log.d(TAG, "requestMovies: cache-miss!");
         }
 
+        mMoviesURL = IPAddresses.MOVIES_API_URL;
         CacheRequest cacheRequest = new CacheRequest(
                 Request.Method.GET,
-                IPAddresses.MOVIES_API_URL,
+                mMoviesURL,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // If the user is offline and there is cache to be shown
-                        boolean thereIsCache = mRequestQueue.getCache().get(IPAddresses.MOVIES_API_URL) != null;
+                        boolean thereIsCache = mRequestQueue.getCache().get(mMoviesURL) != null;
                         if(VolleyErrorHelper.isNetworkProblem(error) && thereIsCache){
                             return;
                         }
