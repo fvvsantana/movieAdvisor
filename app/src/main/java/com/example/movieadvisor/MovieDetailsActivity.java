@@ -9,22 +9,25 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.example.movieadvisor.fragments.ErrorFragment;
+import com.example.movieadvisor.util.CacheRequest;
 import com.example.movieadvisor.util.IPAddresses;
 import com.example.movieadvisor.util.RequestState;
 import com.example.movieadvisor.util.VolleyErrorHelper;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = "MovieDetailsActivity";
@@ -48,6 +51,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private ErrorFragment mErrorFragment;
     // Variable to track the states of the request for the movie details
     private RequestState mMovieDetailsRequestState;
+    private String mMovieURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     // Get reference for the error fragment and setup retry button
     private void setupErrorFragment() {
         mErrorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.activity_movie_details_errorFragment);
-        // TODO: handle this error
         if (mErrorFragment != null) {
             // Don't show error fragment
             mErrorFragment.remove();
@@ -121,23 +124,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     private void requestMovieDetails(){
         showProgressBar();
-        String movieURL = IPAddresses.MOVIES_API_URL + '/' + mMovieId;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+        mMovieURL = IPAddresses.MOVIES_API_URL + '/' + mMovieId;
+
+        CacheRequest cacheRequest = new CacheRequest(
                 Request.Method.GET,
-                movieURL,
-                null,
-                new Response.Listener<JSONObject>(){
+                mMovieURL,
+                new Response.Listener<NetworkResponse>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(NetworkResponse response) {
+
                         // Update request state
                         mMovieDetailsRequestState = RequestState.SUCCESSFUL;
 
-                        /* No more need to detect clicks for reloading the screen, because the
-                         request for data was successful */
-                        mErrorFragment.setRetryButtonOnClickListener(null);
-
-                        // Store the movie details
-                        mMovieData = response;
+                        // Parse JSONArray
+                        try {
+                            final String jsonObjectString = new String(response.data,
+                                    HttpHeaderParser.parseCharset(response.headers));
+                            // Store the movie details
+                            mMovieData = new JSONObject(jsonObjectString);
+                        } catch (UnsupportedEncodingException | JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(MovieDetailsActivity.this, R.string.error_parsingError, Toast.LENGTH_SHORT).show();
+                        }
 
                         /* Remove progress bar because at this point we already have the JSONObject
                             with the details of the movie */
@@ -149,6 +157,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
+                        // If the user is offline and there is cache to be shown
+                        boolean thereIsCache = mRequestQueue.getCache().get(mMovieURL) != null;
+                        if(VolleyErrorHelper.isNetworkProblem(error) && thereIsCache){
+                            return;
+                        }
+
                         error.printStackTrace();
 
                         // Remove undesired views
@@ -163,7 +178,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                 }
         );
-        mRequestQueue.add(jsonObjectRequest);
+        mRequestQueue.add(cacheRequest);
 
         // Update request state
         mMovieDetailsRequestState = RequestState.REQUESTED;
