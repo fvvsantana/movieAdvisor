@@ -27,18 +27,18 @@ public class VolleyErrorHelper {
         return context.getResources().getString(R.string.error_genericServerError);
     }
 
-    // Check if it's a network problem
-    private static boolean isNetworkProblem(VolleyError error) {
+    // Check if it's a network problem (user connection is down)
+    public static boolean isNetworkProblem(VolleyError error) {
         return (error instanceof NetworkError) || (error instanceof NoConnectionError);
     }
 
     // Check if it's a timeout problem
-    private static boolean isTimeoutProblem(VolleyError error) {
+    public static boolean isTimeoutProblem(VolleyError error) {
         return error instanceof TimeoutError;
     }
 
     // Check if it's a server problem
-    private static boolean isServerProblem(VolleyError error) {
+    public static boolean isServerProblem(VolleyError error) {
         return (error instanceof ServerError) || (error instanceof AuthFailureError);
     }
 
