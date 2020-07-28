@@ -88,7 +88,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     // Get reference for the error fragment and setup retry button
     private void setupErrorFragment() {
         mErrorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.activity_movie_details_errorFragment);
-        // TODO: handle this error
         if (mErrorFragment != null) {
             // Don't show error fragment
             mErrorFragment.remove();
