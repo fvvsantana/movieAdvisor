@@ -2,7 +2,7 @@
 
 ## Description
 This is an Android app that shows movie recommendations.
-All the information is fetched from an HTTP-based RESTful API and cached for offline access. The cache is also used when online to improve performance.
+The information is fetched from an HTTP-based RESTful API and cached for offline access. The cache is also used when online to improve performance.
 All the possible connection errors are properly handled.
 
 Screen of movie recommendations:
